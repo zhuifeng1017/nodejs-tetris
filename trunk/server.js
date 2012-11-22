@@ -134,9 +134,6 @@ fu.get("/jquery-1.2.6.min.js", fu.staticHandler("jquery-1.2.6.min.js"));
 fu.get("/tt", fu.staticHandler("Tetris.html"));
 fu.get("/t_client.js", fu.staticHandler("t_client.js"));
 
-
-
-
 fu.get("/who", function (req, res) {
   var nicks = [];
   for (var id in sessions) {
@@ -155,7 +152,7 @@ fu.get("/join", function (req, res) {
     res.simpleJSON(400, {error: "Bad nick."});
     return;
   }
-  var session = createSession(nick);
+  var session = createSession(nick); // 为新进用户创建Session
   if (session == null) {
     res.simpleJSON(400, {error: "Nick in use"});
     return;

@@ -1,3 +1,6 @@
+
+// 此js游戏用
+// CONFIG 存储自身数据
 var CONFIG = { debug: false
              , nick: "#"   // set in onConnect
              , id: null    // set in onConnect
@@ -338,13 +341,13 @@ var starttime;
 var rss;
 
 //handle the server's response to our nickname and join request
-function onConnect (session) {
+function onConnect (session) { // session为json格式
   if (session.error) {
     alert("error connecting: " + session.error);
     showConnect();
     return;
-  }
-
+}
+  
   CONFIG.nick = session.nick;
   CONFIG.id   = session.id;
   starttime   = new Date(session.starttime);
@@ -433,7 +436,7 @@ $(document).ready(function() {
         return;
     }
 
-    // remove fixtures
+    // remove fixtures, 初始隐藏
     $("#main").hide();
     $("#distext").hide();
 
