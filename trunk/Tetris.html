@@ -54,9 +54,23 @@
         fn: [],
         score: 0,
         l: ['#9F0', '#FF3', '#F33', '#C0C', '#33C', '#0F3', '#F93'],
-        v: [0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0xFFFF],
-        // 此乃所有方块点阵，换乘二进制就能看到结果
-        d: [[0xCC00], [0x4444, 0xF0], [0x8C40, 0x6C00], [0x4C80, 0xC600], [0x44C0, 0x8E00, 0xC880, 0xE200], [0x88C0, 0xE800, 0xC440, 0x2E00], [0x4E00, 0x8C80, 0xE400, 0x4C40]],
+        
+        // 每一行用12bit表示，第一列和最后一列为边框，共20行。
+        v: [0x801, 0x801, 0x801,
+        0x801, 0x801, 0x801, 0x801,
+        0x801, 0x801, 0x801, 0x801,
+        0x801, 0x801, 0x801, 0x801,
+         0x801, 0x801, 0x801, 0x801,
+         0xFFFF],  // 最后一行为边框
+         
+        // 此乃所有方块点阵，换乘二进制就能看到结果，共7种形状。每一个方块用16bit表示
+        d: [[0xCC00], [0x4444, 0xF0],
+        [0x8C40, 0x6C00],
+         [0x4C80, 0xC600],
+         [0x44C0, 0x8E00, 0xC880, 0xE200],
+         [0x88C0, 0xE800, 0xC440, 0x2E00],
+          [0x4E00, 0x8C80, 0xE400, 0x4C40]],
+        
         init: function() {
             var body = document.getElementById('body');
             var body2 = document.getElementById('body2');
@@ -88,9 +102,9 @@
             if (G.pause) return;
             if (!G.move(G.x, G.y + 1, G.t)) {
                 var s = 0;
-                for (var i = 0; i < 19; i++) {
+                for (var i = 0; i < 19; i++) {  // 遍历每一行
                     G.v[i] = G.v[i] | G.m[i];
-                    if (G.v[i] == 0xFFF) {
+                    if (G.v[i] == 0xFFF) {   // 消行
                         for (var k = i; k > 0; k--) {
                             G.v[k] = G.v[k - 1];
                         }
@@ -103,11 +117,13 @@
             G.draw();
             return true;
         },
+        
+        
         move: function(x, y, t) {
-            var m = [];
-            for (var k = 0; k < 4; k++) {
+            var m = []; // 240个格子
+            for (var k = 0; k < 4; k++) {    ///// 将当前方块映射到240个格子当中
                 m[y + k] = (G.d[G.n][t] >> (3 - k) * 4 & 0xF) << Math.max(x, 0) >> -Math.min(x, 0);
-                if (m[y + k] & G.v[y + k]) {
+                if (m[y + k] & G.v[y + k])  { // 有碰撞，不能move 
                     return false;
                 }
             }
@@ -126,6 +142,8 @@
             G._t = parseInt(Math.random() * G.d[G._n].length); //随机方块状态
             G._c = parseInt(Math.random() * G.l.length); //随机颜色
         },
+        
+        // 产生下一个方块
         next: function() {
             G.rand();
             if (parseInt(G.score / 20) != G.level) {//每20分一级
@@ -136,12 +154,13 @@
             G.domScore.innerHTML = 'Score:' + G.score;
             G.domLevel.innerHTML = 'Level:' + G.level;
             var i = 0;
-            while (!(G.d[G.n][G.t] >> i * 4 & 0xF)) i++;
-            if (!G.move(3, i - 3, G.t)) {
+            while (!(G.d[G.n][G.t] >> i * 4 & 0xF)) i++;    /////?????
+            if (!G.move(3, i - 3, G.t)) {   // 第一次move
                 alert('Game over!');
                 clearInterval(G.handle);
             }
         },
+        
         draw: function() {
             for (var i = 0; i < 240; i++) {
                 var props = ['0', '#'];
@@ -188,21 +207,22 @@
              }
         },
 
+		// 按键消息处理
         event: function(e, t) {
             switch (e.keyCode) {
-                case 37:
+                case 37:	//left
                     G.move(G.x + 1, G.y, G.t);
                     break;
-                case 39:
+                case 39:	//right
                     G.move(G.x - 1, G.y, G.t);
                     break;
-                case 38:
+                case 38:	//up
                     G.move(G.x, G.y, (G.t + 1) % G.d[G.n].length);
                     break;
-                case 40:
+                case 40:	//down
                     G.timeTesk();
                     break;
-                case 32:
+                case 32:	// space
                     while (G.timeTesk());
             }
         }
