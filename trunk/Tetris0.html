@@ -1,19 +1,93 @@
-﻿
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <style>
-    div {display:block;background-color:black;position:absolute;font:17px Tahoma;color:#fff;}
-    span {float:left;background-color:gray;width:12px;height:12px;border:4px gray outset;margin:0 1 1 0;overflow:hidden;}
-    p {float:left;width:8px;height:8px;border:2px gray outset;overflow:hidden;margin:0;padding:0}
-    #main {width:375px;height:430px;display:block;background-color:gray;position:relative;}
-    #body {width:241px;height:401px;left:15px;top:15px;border:1px solid #999;}
-	#score {width:80px;height:24px;left:270px;top:15px;padding:4px;}
-	#level {width:80px;height:24px;left:270px;top:50px;padding:4px;}
-	#next {width:50px;height:50px;left:270px;top:85px;border:19px black solid;}
-	#ctrl {width:80px;height:55px;left:270px;top:360px;padding:4px;text-align:center;background-color:gray}
-	#ctrl button{width:80px;height:25px;}
+    div
+    {
+        display: block;
+        background-color: black;
+        position: absolute;
+        font: 17px Tahoma;
+        color: #fff;
+    }
+    span
+    {
+        float: left;
+        background-color: gray;
+        width: 12px;
+        height: 12px;
+        border: 4px gray outset;
+        margin: 0 1 1 0;
+        overflow: hidden;
+    }
+    p
+    {
+        float: left;
+        width: 8px;
+        height: 8px;
+        border: 2px gray outset;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    #main
+    {
+        width: 375px;
+        height: 430px;
+        display: block;
+        background-color: gray;
+        position: relative;
+    }
+    #body
+    {
+        width: 241px;
+        height: 401px;
+        left: 15px;
+        top: 15px;
+        border: 1px solid #999;
+    }
+    #score
+    {
+        width: 80px;
+        height: 24px;
+        left: 270px;
+        top: 15px;
+        padding: 4px;
+    }
+    #level
+    {
+        width: 80px;
+        height: 24px;
+        left: 270px;
+        top: 50px;
+        padding: 4px;
+    }
+    #next
+    {
+        width: 50px;
+        height: 50px;
+        left: 270px;
+        top: 85px;
+        border: 19px black solid;
+    }
+    #ctrl
+    {
+        width: 80px;
+        height: 55px;
+        left: 270px;
+        top: 360px;
+        padding: 4px;
+        text-align: center;
+        background-color: gray;
+    }
+    #ctrl button
+    {
+        width: 80px;
+        height: 25px;
+    }
 </style>
+
 <script src="jquery-1.2.6.js" type="text/javascript"></script>
+
 <script>
     //By: X!ao_f QQ:120000512
     var G = {
@@ -57,18 +131,23 @@
             G.draw();
             return true;
         },
-        
+
         move: function(x, y, t) {
-            //$("#distext").append("x, y, t  " + x + "," + y + "," + t + "</br>");
-           // $("#distext").scrollTop(100000);
-            
-            var m = [];
-            for (var k = 0; k < 4; k++) {
+            $("#distext").append("x, y, t  " + x + "," + y + "," + t + "</br>");
+            $("#distext").scrollTop(100000);
+
+            var m = [];   // 用来同G.rows 比较，计算哪些cell应该显示或隐藏
+            for (var k = 0; k < 4; k++) { // k=0,1,2,3
                 m[y + k] = (G.shape[G.shapeIdx][t] >> (3 - k) * 4 & 0xF) << Math.max(x, 0) >> -Math.min(x, 0);
-                if (m[y + k] & G.rows[y + k]) {
+                if (m[y + k] & G.rows[y + k]) {    // 有碰撞，不能移动，return
                     return false;
                 }
             }
+            /*这样看来，数组m 只有4行有值，也就是绘制的时候用来判断显示还是隐藏的。
+            ce = (G.shape[G.shapeIdx][t] >> (3 - k) * 4 & 0xF), 获取第每一行值
+            ce << Math.max(x, 0) >> -Math.min(x, 0); 其实就是判断到底是左移还是右移abs(x)
+            */
+
             G.x = x;
             G.y = y;
             G.shapeTransIdx = t;
@@ -76,20 +155,20 @@
             G.draw();
             return true;
         },
-        
+
         rand: function() {
-        
+
             // 保存上次状态
             G.shapeIdx = G._shapeIdx;  // 第几种方块
             G.shapeTransIdx = G._shapeTransIdx;    // 该方块变换idx
             G.shapeClr = G._shapeClr;   // 该该方块color
-            
+
             // 生成当前状态
             G._shapeIdx = parseInt(Math.random() * G.shape.length);
             G._shapeTransIdx = parseInt(Math.random() * G.shape[G._shapeIdx].length);
             G._shapeClr = parseInt(Math.random() * G.clr.length);
         },
-        
+
         next: function() {
             G.rand();
             if (parseInt(G.score / 20) != G.level) {
@@ -106,29 +185,33 @@
             让该方块第4行（至少有一个cell为1）位于区域第1行（或第-1行）。
             如果不做这个计算，会让方块在不可见区域空转，感觉上等待时间太长。
             */
-            $("#distext").append(i + "</br>");
-            $("#distext").scrollTop(100000);
+            //$("#distext").append(i + "</br>");
+            //$("#distext").scrollTop(100000);
 
             /**   为什么是x=3， y=i-3??
-             区域一行是10个cell（本身是12个cell，其中围墙占了2个），方块为4*4的cell，要让方块居中的话，
-             方块的x坐标为3
+            区域一行是10个cell（本身是12个cell，其中围墙占了2个），方块为4*4的cell，要让方块居中的话，
+            方块的x坐标为3, 记住index是低位到高位（从右到左）。
             */
-            if (!G.move(3, i - 3, G.shapeTransIdx)) {  
+
+            if (!G.move(3, i - 3, G.shapeTransIdx)) {      // 第一次move
                 alert('Game over!');
                 clearInterval(G.handle);
             }
         },
+
         draw: function() {
             for (var i = 0; i < 240; i++) {
-                if ((G.rows[parseInt(i / 12)] >> (11 - i % 12)) & 0x1) {
+                // (i % 12) = 0,1,2,3,.......11, 右移11,10,9....0 位
+                if ((G.rows[parseInt(i / 12)] >> (11 - (i % 12))) & 0x1) {
                     G.fs[i].style.visibility = '';
-                } else if ((G.m[parseInt(i / 12)] >> (11 - i % 12)) & 0x1) {
+                } else if ((G.m[parseInt(i / 12)] >> (11 - (i % 12))) & 0x1) {
                     G.fs[i].style.visibility = '';
                     G.fs[i].style.borderColor = G.fs[i].style.background = G.clr[G.shapeClr];
                 } else {
                     G.fs[i].style.visibility = 'hidden';
                 }
             }
+
             for (var i = 0; i < 16; i++) {
                 if (G.shape[G._shapeIdx][G._shapeTransIdx] >> (15 - i) & 0x1) {
                     G.fn[i].style.visibility = '';
@@ -138,12 +221,13 @@
                 }
             }
         },
+
         event: function(e, t) {
             switch (e.keyCode) {
-                case 37:
+                case 37:   //left
                     G.move(G.x + 1, G.y, G.shapeTransIdx);
                     break;
-                case 39:
+                case 39:   //right
                     G.move(G.x - 1, G.y, G.shapeTransIdx);
                     break;
                 case 38:   //up， 变换方块
@@ -158,21 +242,27 @@
         }
     }
 </script>
+
 <body onload='G.init();'>
-	<div id='main'>
-		<div id='body'></div>
-		<div id='score'></div>
-		<div id='level'></div>
-		<div id='next'></div>
-		<div id='ctrl'>
-			<button onclick="javascript:location.href=location.href;">New</button>
-			<button onclick="javascript:this.innerHTML={'true':'Start','false':'Pause'}[G.pause=!!!G.pause];">Pause</button>
-		</div>
-	</GMain>
-	
-	   <div id="distext" style="border:1px solid black; width:100%; height:200px; overflow:auto; margin-top: 30px; top:410px">
-   This is some text
-   </div>
+    <div id='main'>
+        <div id='body'>
+        </div>
+        <div id='score'>
+        </div>
+        <div id='level'>
+        </div>
+        <div id='next'>
+        </div>
+        <div id='ctrl'>
+            <button onclick="javascript:location.href=location.href;">
+                New</button>
+            <button onclick="javascript:this.innerHTML={'true':'Start','false':'Pause'}[G.pause=!!!G.pause];">
+                Pause</button>
+        </div>
+        </GMain>
+        <div id="distext" style="border: 1px solid black; width: 100%; height: 200px; overflow: auto;
+            margin-top: 30px; top: 410px">
+            This is some text
+        </div>
 </body>
 </html>
-
