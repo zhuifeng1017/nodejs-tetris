@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script type="text/javascript">
+        /*
+        var name = "The Window2";
+        var object = {
+	　　name : "My Object",
+	　　getNameFunc : function(){
+        alert(this.name);
+	　　　　return function(){
+	　　　　　　return this.name;
+	　　　　};
+	　　}
+	};
+　　alert(object.getNameFunc()());
+
+
+var name = "The Window";
+　　var object = {
+　　　　name : "My Object",
+　　　　getNameFunc : function(){
+　　　　　　var that = this;
+　　　　　　return function(){
+　　　　　　　　return that.name;
+　　　　　　};
+　　　　}
+　　};
+　　alert(object.getNameFunc()());
+        */
+        var text = [0, 2];
+        function f1(a1, a2, a3) {
+            alert(text[239])
+        }
+        //f1(1);
+
+        var Queue = {
+            elements: [],
+            max: 100, //耕協海業100
+            top: 0,
+            tail: 0,
+            size: 0,
+            circuit: false,
+
+            setCircuit: function(circ) {
+                Queue.circuit = circ;
+            },
+            empty: function() {
+                return Queue.size == 0;
+            },
+            full: function() {
+                return Queue.size == Queue.max;
+            },
+            inque: function(val) {
+                if (!Queue.circuit && Queue.full()) {
+                    alert("諾阻");
+                    return false;
+                } else {
+                    Queue.elements[Queue.tail] = val;
+                    Queue.tail = (Queue.tail + 1) % Queue.max;
+                    if (Queue.size == Queue.max) // 諾阻,top了崔瓜顕固
+                    {
+                        Queue.top = (Queue.top + 1) % Queue.max;
+                    } else {
+                        ++Queue.size;
+                    }
+                    return true;
+                }
+            },
+
+            deque: function() {
+                if (Queue.empty()) {
+                    alert("腎阻");
+                    return false;
+                }
+                else {
+                    var val = Queue.elements[Queue.top];
+                    Queue.elements[Queue.top] = null;
+                    Queue.top = (Queue.top + 1) % Queue.max;
+                    --Queue.size;
+                    return val;
+                }
+            },
+
+            dump: function() {
+                var begin = Queue.top;
+                var end = Queue.tail;
+                var arr = [];
+                if (!Queue.empty()) {
+                    do {
+                        arr.push(Queue.elements[begin]);
+                        begin = (begin + 1) % Queue.max;
+                    } while (begin != end)
+                }
+                return arr;
+            }
+        };
+
+        (function TestQueue() {
+            Queue.setCircuit(false);
+            for (var i = 0; i < 121; ++i) {
+                if (Queue.inque(i) === false)
+                    break;
+            }
+            alert(Queue.dump());
+
+            for (var i = 0; i < 5; ++i) {
+                if (Queue.deque(i) === false)
+                    break;
+            }
+            alert(Queue.dump());
+
+            for (var i = 200; i < 280; ++i) {
+                if (Queue.inque(i) === false)
+                    break;
+            }
+
+            alert(Queue.dump());
+            alert(Queue.elements);
+        })/*()*/;
+
+</script>
+
+</head>
+<body>
+    <div id="display">
+    </div>
+</body>
+</html>

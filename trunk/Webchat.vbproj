@@ -123,8 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="client.js" />
+    <Content Include="Data Structure.html" />
     <Content Include="fu.js" />
     <Content Include="index.html" />
+    <Content Include="jquery-1.2.6.js" />
     <Content Include="jquery-1.2.6.min.js" />
     <Content Include="server.js" />
     <Content Include="style.css" />

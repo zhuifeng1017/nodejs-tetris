@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <script type="text/javascript">
+        var R1 = [5, 2, 10, 4, 90, 88, 65, 62];
+        var R2 = [5, 2, 10, 4, 90, 88, 65, 62];
+        var R3 = [2, 4, 10, 5, 62, 65, 88, 90];
+
+        function BubbleSort(a) {
+            var count = 0;
+            for (var i = a.length; --i >= 0; ) {
+                var swapped = false;
+                for (var j = 0; j < i; j++) {
+                    if (a[j] > a[j + 1]) {
+                        var t = a[j];
+                        a[j] = a[j + 1];
+                        a[j + 1] = t;
+                        swapped = true;
+                    }
+                    ++count;
+                }
+                if (!swapped) return count;
+            }
+            return count;
+        }
+
+        var cnt3 = BubbleSort(R3);
+        var cnt2 = BubbleSort(R2);
+        var cnt1 = BubbleSort(R1);
+        
+        document.writeln(R3.join(",") + "   cnt3:" + cnt3);
+        document.write("</br>");
+        document.writeln(R2.join(",") + "   cnt2:" + cnt2);
+        document.write("</br>");
+        document.writeln(R1.join(",") + "  cnt1:" + cnt1);
+    
+</script>
+</head>
+<body>
+
+</body>
+</html>
