@@ -91,20 +91,23 @@
 <script>
     //By: X!ao_f QQ:120000512
     var G = {
-        fs: [],
-        fn: [],
+        cells: [],
+        cells2: [],
         score: 0,
         clr: ['#9F0', '#FF3', '#F33', '#C0C', '#33C', '#0F3', '#F93'],
+        // 每一行用12bit表示，第一列,最后一列,  最后一行为边框，共20行。
         rows: [0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0x801, 0xFFFF],
+        // 此乃所有方块点阵4*4，换乘二进制就能看到结果，共7种形状。每一个方块用16bit表示
         shape: [[0xCC00], [0x4444, 0xF0], [0x8C40, 0x6C00], [0x4C80, 0xC600], [0x44C0, 0x8E00, 0xC880, 0xE200], [0x88C0, 0xE800, 0xC440, 0x2E00], [0x4E00, 0x8C80, 0xE400, 0x4C40]],
+        
         init: function() {
             var body = document.getElementById('body');
             var next = document.getElementById('next');
             for (var i = 0; i < 240; i++) {
-                G.fs.push(body.appendChild(document.createElement("span")));
+                G.cells.push(body.appendChild(document.createElement("span")));
             }
             for (var i = 0; i < 16; i++) {
-                G.fn.push(next.appendChild(document.createElement("p")));
+                G.cells2.push(next.appendChild(document.createElement("p")));
             }
             G.domScore = document.getElementById('score');
             G.domLevel = document.getElementById('level');
@@ -137,7 +140,7 @@
             $("#distext").scrollTop(100000);
 
             var m = [];   // 用来同G.rows 比较，计算哪些cell应该显示或隐藏
-            for (var k = 0; k < 4; k++) { // k=0,1,2,3
+            for (var k = 0; k < 4; k++) { // k=0,1,2,3，依次右移 12 ,8 ,4 ,0 位, & 0xF : 最多占4bit
                 m[y + k] = (G.shape[G.shapeIdx][t] >> (3 - k) * 4 & 0xF) << Math.max(x, 0) >> -Math.min(x, 0);
                 if (m[y + k] & G.rows[y + k]) {    // 有碰撞，不能移动，return
                     return false;
@@ -157,11 +160,10 @@
         },
 
         rand: function() {
-
             // 保存上次状态
             G.shapeIdx = G._shapeIdx;  // 第几种方块
             G.shapeTransIdx = G._shapeTransIdx;    // 该方块变换idx
-            G.shapeClr = G._shapeClr;   // 该该方块color
+            G.shapeClr = G._shapeClr;   // 该方块color
 
             // 生成当前状态
             G._shapeIdx = parseInt(Math.random() * G.shape.length);
@@ -200,24 +202,24 @@
         },
 
         draw: function() {
-            for (var i = 0; i < 240; i++) {
-                // (i % 12) = 0,1,2,3,.......11, 右移11,10,9....0 位
+            for (var i = 0; i < 240; i++) {   // 遍历每个cell，一个cell用12bit表示
+                // (i % 12) = 0,1,2,3,.......11,  右移11,10,9....0 位
                 if ((G.rows[parseInt(i / 12)] >> (11 - (i % 12))) & 0x1) {
-                    G.fs[i].style.visibility = '';
+                    G.cells[i].style.visibility = '';
                 } else if ((G.m[parseInt(i / 12)] >> (11 - (i % 12))) & 0x1) {
-                    G.fs[i].style.visibility = '';
-                    G.fs[i].style.borderColor = G.fs[i].style.background = G.clr[G.shapeClr];
+                    G.cells[i].style.visibility = '';
+                    G.cells[i].style.borderColor = G.cells[i].style.background = G.clr[G.shapeClr];
                 } else {
-                    G.fs[i].style.visibility = 'hidden';
+                    G.cells[i].style.visibility = 'hidden';
                 }
             }
 
             for (var i = 0; i < 16; i++) {
                 if (G.shape[G._shapeIdx][G._shapeTransIdx] >> (15 - i) & 0x1) {
-                    G.fn[i].style.visibility = '';
-                    G.fn[i].style.borderColor = G.fn[i].style.background = G.clr[G._shapeClr];
+                    G.cells2[i].style.visibility = '';
+                    G.cells2[i].style.borderColor = G.cells2[i].style.background = G.clr[G._shapeClr];
                 } else {
-                    G.fn[i].style.visibility = 'hidden';
+                    G.cells2[i].style.visibility = 'hidden';
                 }
             }
         },
