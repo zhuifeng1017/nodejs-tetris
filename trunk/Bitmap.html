@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title></title>
+    
+<script type="text/javascript">
+
+    var R = [1, 2, 3, 3, 4, 3, 2, 4, 5, 1, 3, 100];
+    var g_arr = [];
+  
+//   将给定值映射到bitmap
+    function bitmapSet(i) {
+        var index = parseInt(i / 8);   // byte数组index
+        var ofset = i % 8;                 // 在该byte中的位移
+        var val = (0x01 << (ofset-1));  
+        g_arr[index] |= val;
+    }
+
+    function bitmapGet(i) {
+        var index = parseInt(i / 8);
+        var ofset = i % 8;
+        var val = (0x01 << (ofset - 1));
+        var ret = g_arr[index] & val;
+        return (ret>0)?1:0;
+    }
+
+//根据最大值初始化bitmap数组 byte数组长度为：max/8 + 1
+    function bitmapInit(max) {
+        var size = parseInt(max / 8) + 1;
+        for (var i = 0; i < size; ++i)     g_arr[i] = 0x0;
+    }
+
+
+/////////////////////////////////////////////////////////////
+    bitmapInit(100);
+    for (var i=0; i < R.length; ++i){
+        bitmapSet(R[i]);
+    }
+
+    for (var i = 0; i <= 100; ++i) {
+        if (bitmapGet(i) > 0) {
+            console.log("存在："  + i);
+        }else{
+            //console.log("不存在："  + i);
+        } 
+    }
+</script>
+    
+    
+</head>
+<body>
+
+</body>
+</html>

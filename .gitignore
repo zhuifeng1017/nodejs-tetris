@@ -1,0 +1,8 @@
+*.suo
+
+/trunk/*.user
+/trunk/Webchat.sln
+
+/trunk/jquery-1.2.6.js
+
+/trunk/obj/Debug/Webchat.vbproj.FileListAbsolute.txt

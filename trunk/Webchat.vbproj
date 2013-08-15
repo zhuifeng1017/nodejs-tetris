@@ -122,6 +122,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BubbleSort.html" />
     <Content Include="client.js" />
     <Content Include="Data Structure.html" />
     <Content Include="fu.js" />
